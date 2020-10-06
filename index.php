@@ -23,6 +23,7 @@
             background-color: #1883ba;
             border-radius: 6px;
             border: 2px solid #0016b0;
+            text-align: center;
         }
 
         .contenido {
@@ -44,6 +45,7 @@
         }
 
         .verificador {
+            text-align: center;
             font-size: 25px;
             width: 5%;
             border: 0.5px solid red;
@@ -69,6 +71,13 @@
         .copyright {
             font-family: 'Courier New', Courier, monospace;
         }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            font-family: 'Courier New', Courier, monospace;
+        }
     </style>
 
     <div class="contenido">
@@ -79,9 +88,11 @@
         <label class="guion">-</label>
         <input class="verificador" type="text" id="verificador" width="1%" disabled>
         <br><br>
-        <input class="boton_personalizado" type="submit" name="" value="Calcular" id="calcular" onclick="digitoVer();">
+        <input class="boton_personalizado" type="submit" name="" value="Calcular Dígito" id="calcular" onclick="digitoVer();">
+        <input type="button" class="boton_personalizado" name="" value="Buscar persona por RUT" id="calcular" onclick="buscaRut();">
         <br><br>
         <label class="msgError" id="msgError"><b><b /></label>
+        <table id="tblBuscaRut" align="center"></table>
     </div>
     <label class="copyright">
         <center>Marcos Fernández - 2020</center>
@@ -118,6 +129,69 @@
             method: "post",
             success: function(data) {
                 document.getElementById('verificador').value = data;
+            }
+        });
+    }
+
+    function formateaRut() {
+
+        rut = document.getElementById("rut").value + document.getElementById('verificador').value;
+
+        var actual = rut.replace(/^0+/, "");
+        if (actual != '' && actual.length > 1) {
+            var sinPuntos = actual.replace(/\./g, "");
+            var actualLimpio = sinPuntos.replace(/-/g, "");
+            var inicio = actualLimpio.substring(0, actualLimpio.length - 1);
+            var rutPuntos = "";
+            var i = 0;
+            var j = 1;
+            for (i = inicio.length - 1; i >= 0; i--) {
+                var letra = inicio.charAt(i);
+                rutPuntos = letra + rutPuntos;
+                if (j % 3 == 0 && j <= inicio.length - 1) {
+                    rutPuntos = "." + rutPuntos;
+                }
+                j++;
+            }
+            var dv = actualLimpio.substring(actualLimpio.length - 1);
+            rutPuntos = rutPuntos + "-" + dv;
+        }
+        return rutPuntos;
+    }
+
+    function buscaRut() {
+
+        var param = {
+            rut: formateaRut()
+        };
+
+        $.ajax({
+            data: param,
+            url: "buscaRut.php",
+            method: "post",
+            success: function(data) {
+
+                if(document.getElementById("verificador").value == ""){
+                    document.getElementById('msgError').innerHTML = "Error: Debe calcular primero el dígito verificador.";
+                    return false;
+                }
+
+                var myAnchor = document.getElementById("tblBuscaRut");
+                var mySpan = document.createElement("table");
+                mySpan.setAttribute("id", "tblBuscaRut");
+                mySpan.setAttribute("align", "center");
+                mySpan.innerHTML = data;
+                myAnchor.parentNode.replaceChild(mySpan, myAnchor);
+
+                var arrRows = document.getElementById("tblBuscaRut").getElementsByTagName("tr");
+                if (arrRows.length <= 1) {
+                    var myAnchor = document.getElementById("tblBuscaRut");
+                    var mySpan = document.createElement("table");
+                    mySpan.setAttribute("id", "tblBuscaRut");
+                    mySpan.setAttribute("align", "center");
+                    mySpan.innerHTML = "Ups! No existe la persona que intentas buscar.";
+                    myAnchor.parentNode.replaceChild(mySpan, myAnchor);
+                }
             }
         });
     }
