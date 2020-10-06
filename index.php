@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <!-- Por Marcos Fernandez -->
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
     <title>Cálculo Digito Verificador Rut</title>
 </head>
 
@@ -32,14 +37,15 @@
         }
 
         .titulo {
-            font-size: 50px;
+            width: 100%;
+            font-size: 35px;
             font-weight: bold;
             font-family: 'Courier New', Courier, monospace;
         }
 
         .verificador {
             font-size: 25px;
-            width: 17px;
+            width: 5%;
             border: 0.5px solid red;
             border-radius: 4px;
             font-weight: bold;
@@ -50,7 +56,18 @@
         }
 
         .rut {
+            width: 155px;
+            margin-left: 5px;
+            margin-bottom: 10px;
             font-size: 25px;
+        }
+
+        .guion {
+            font-weight: bold;
+        }
+
+        .copyright {
+            font-family: 'Courier New', Courier, monospace;
         }
     </style>
 
@@ -59,13 +76,16 @@
         <br><br><br>
         <label><b>Inserte el rut: <b /></label>
         <input type="text" class="rut" id="rut" placeholder="EJ: 12345678" required>
-        <label><b>-</b></label>
+        <label class="guion">-</label>
         <input class="verificador" type="text" id="verificador" width="1%" disabled>
         <br><br>
         <input class="boton_personalizado" type="submit" name="" value="Calcular" id="calcular" onclick="digitoVer();">
         <br><br>
         <label class="msgError" id="msgError"><b><b /></label>
     </div>
+    <label class="copyright">
+        <center>Marcos Fernández - 2020</center>
+    </label>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
 
 </body>
@@ -85,7 +105,7 @@
 
         setFormato();
         soloNumero(document.getElementById('verificador'));
-        
+
 
 
         var param = {
